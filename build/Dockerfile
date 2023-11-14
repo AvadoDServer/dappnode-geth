@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 ethereum/client-go:v1.13.3 as geth
+FROM --platform=linux/amd64 ethereum/client-go:v1.13.5 as geth
 
 RUN apk update && apk add --no-cache \
     bash \

@@ -1,0 +1,31 @@
+{
+  "name": "holesky-geth.avado.dnp.dappnode.eth",
+  "version": "1.0.0",
+  "upstream": "v1.13.5",
+  "autoupdate": true,
+  "title": "Geth + Holesky",
+  "description": "This package provides a Geth Ethereum client that is configured to sync the Holesky Testnet.",
+  "avatar": "/ipfs/QmacLLW9Q3diniKmAucvCfDEHMu4vepaoR825TjQJzHmyV",
+  "type": "library",
+  "image": {
+    "restart": "always",
+    "ports": [
+      "39393:39393/tcp",
+      "39393:39393/udp"
+    ],
+    "volumes": [
+      "data:/data"
+    ],
+    "environment": [
+      "NETWORK=holesky",
+      "EXTRA_OPTS=--http.api eth,net,web3,txpool"
+    ]
+  },
+  "author": "AVADO",
+  "license": "(C)",
+  "links": {
+    "RPC endpoint (http)": "http://holesky-geth.my.ava.do:8545",
+    "RPC endpoint (ws)": "ws://holesky-geth.my.ava.do:8546",
+    "EE endpoint (http)": "http://holesky-geth.my.ava.do:8551"
+  }
+}

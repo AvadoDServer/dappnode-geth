@@ -1,4 +1,5 @@
-FROM --platform=linux/amd64 ethereum/client-go:v1.13.3 as geth
+ARG VERSION
+FROM --platform=linux/amd64 ethereum/client-go:${VERSION}
 
 RUN apk update && apk add --no-cache \
     bash \
@@ -27,4 +28,4 @@ COPY ./files/start.sh /opt/start.sh
 COPY ./files/reload-certs.sh /opt/reload-certs.sh
 RUN chmod +x /opt/start.sh /opt/reload-certs.sh
 
-ENTRYPOINT ["/opt/start.sh"]
+ENTRYPOINT ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]

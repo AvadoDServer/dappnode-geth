@@ -1,0 +1,23 @@
+version: '3.4'
+services:
+  holesky-geth.avado.dnp.dappnode.eth:
+    image: 'holesky-geth.avado.dnp.dappnode.eth:1.0.0'
+    build:
+      context: ./build
+      args:
+        VERSION: v1.13.5
+    volumes:
+      - 'data:/data'
+    ports:
+      - '443:443'
+      - '8545:8545'
+      - '8546:8546'
+      - '8551:8551'
+      - '39393:39393'
+      - '39393:39393/udp'
+    restart: always
+    environment:
+      - NETWORK=holesky
+      - EXTRA_OPTS=
+volumes:
+  data: {}

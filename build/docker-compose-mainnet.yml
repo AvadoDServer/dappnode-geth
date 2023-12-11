@@ -1,0 +1,23 @@
+version: '3.4'
+services:
+  ethchain-geth.public.dappnode.eth:
+    image: 'ethchain-geth.public.dappnode.eth:10.0.59'
+    build:
+      context: ./build
+      args:
+        VERSION: v1.13.5
+    volumes:
+      - 'ethchain-geth:/root/.ethereum/ethchain-geth'
+    ports:
+      - '443:443'
+      - '8545:8545'
+      - '8546:8546'
+      - '8551:8551'
+      - '30303:30303'
+      - '30303:30303/udp'
+    restart: always
+    environment:
+      - NETWORK=mainnet
+      - EXTRA_OPTS=
+volumes:
+  ethchain-geth: {}

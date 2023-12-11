@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   holesky-geth.avado.dnp.dappnode.eth:
-    image: 'holesky-geth.avado.dnp.dappnode.eth:1.0.0'
+    image: 'holesky-geth.avado.dnp.dappnode.eth:1.0.1'
     build:
       context: ./build
       args:

@@ -1,6 +1,6 @@
 {
   "name": "holesky-geth.avado.dnp.dappnode.eth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "upstream": "v1.13.5",
   "autoupdate": true,
   "title": "Geth + Holesky",

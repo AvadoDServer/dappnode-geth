@@ -1,11 +1,11 @@
 version: '3.4'
 services:
   holesky-geth.avado.dnp.dappnode.eth:
-    image: 'holesky-geth.avado.dnp.dappnode.eth:1.0.3'
+    image: 'holesky-geth.avado.dnp.dappnode.eth:1.0.4'
     build:
       context: ./build
       args:
-        VERSION: v1.13.8
+        VERSION: v1.13.9
     volumes:
       - 'data:/data'
     ports:

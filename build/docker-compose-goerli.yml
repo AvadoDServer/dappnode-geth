@@ -1,11 +1,11 @@
 version: '3.4'
 services:
   goerli-geth.avado.dnp.dappnode.eth:
-    image: 'goerli-geth.avado.dnp.dappnode.eth:10.4.50'
+    image: 'goerli-geth.avado.dnp.dappnode.eth:10.4.51'
     build:
       context: ./build
       args:
-        VERSION: v1.13.8
+        VERSION: v1.13.9
     volumes:
       - 'goerli:/goerli'
     ports:

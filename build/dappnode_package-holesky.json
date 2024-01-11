@@ -1,7 +1,7 @@
 {
   "name": "holesky-geth.avado.dnp.dappnode.eth",
-  "version": "1.0.3",
-  "upstream": "v1.13.8",
+  "version": "1.0.4",
+  "upstream": "v1.13.9",
   "autoupdate": true,
   "title": "Geth + Holesky",
   "description": "This package provides a Geth Ethereum client that is configured to sync the Holesky Testnet.",

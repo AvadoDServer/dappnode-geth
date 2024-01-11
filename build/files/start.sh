@@ -35,7 +35,7 @@ echo "GETH_CMD=$GETH_CMD"
 # Print version to the log
 /usr/local/bin/geth version
 
-/usr/local/bin/geth \
+exec /usr/local/bin/geth \
   --datadir ${DATA_DIR} \
   ${NET_ARG} \
   --port ${P2P_PORT} \

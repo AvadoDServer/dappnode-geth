@@ -1,11 +1,11 @@
 version: '3.4'
 services:
   ethchain-geth.public.dappnode.eth:
-    image: 'ethchain-geth.public.dappnode.eth:10.0.64'
+    image: 'ethchain-geth.public.dappnode.eth:10.0.65'
     build:
       context: ./build
       args:
-        VERSION: v1.14.0
+        VERSION: v1.14.9
     volumes:
       - 'ethchain-geth:/root/.ethereum/ethchain-geth'
     ports:

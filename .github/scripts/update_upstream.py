@@ -6,10 +6,12 @@ This script:
 1. Fetches the latest release from ethereum/go-ethereum
 2. Compares it with the current upstream version in build/dappnode_package-mainnet.json
 3. If a newer version is found:
-   - Increments the patch version in all dappnode_package-*.json files
-   - Updates the upstream version in all dappnode_package-*.json files
-   - Updates the image tag in all docker-compose-*.yml files
-   - Updates the VERSION build arg in all docker-compose-*.yml files
+   - Increments the patch version in dappnode_package-mainnet.json
+   - Updates the upstream version in dappnode_package-mainnet.json
+   - Updates the image tag in docker-compose-mainnet.yml
+   - Updates the VERSION build arg in docker-compose-mainnet.yml
+
+Note: Only mainnet files are updated by this script.
 """
 
 import json
@@ -217,54 +219,30 @@ def main():
     print(f"Update available: {current_upstream} -> {latest_geth_version}")
     print("=" * 60 + "\n")
     
-    # Find all package JSON files
-    package_files = sorted(build_dir.glob('dappnode_package-*.json'))
+    # Only update mainnet files
+    mainnet_package = build_dir / 'dappnode_package-mainnet.json'
+    mainnet_compose = build_dir / 'docker-compose-mainnet.yml'
     
-    if not package_files:
-        print("Error: No dappnode_package-*.json files found")
+    if not mainnet_package.exists():
+        print(f"Error: {mainnet_package} not found")
         sys.exit(1)
     
-    print(f"Found {len(package_files)} package files to update")
-    
-    # Update each package file
-    for package_file in package_files:
-        # Read current version from this specific file
-        with open(package_file, 'r') as f:
-            pkg_data = json.load(f)
-        
-        current_pkg_version = pkg_data.get('version', '')
-        new_pkg_version = increment_patch_version(current_pkg_version)
-        
-        update_package_json(package_file, new_pkg_version, latest_geth_version)
-    
-    # Find all docker-compose YAML files
-    compose_files = sorted(build_dir.glob('docker-compose-*.yml'))
-    
-    if not compose_files:
-        print("Error: No docker-compose-*.yml files found")
+    if not mainnet_compose.exists():
+        print(f"Error: {mainnet_compose} not found")
         sys.exit(1)
     
-    print(f"\nFound {len(compose_files)} docker-compose files to update")
+    print("Updating mainnet package file...")
     
-    # For docker-compose files, we need to match each with its corresponding package
-    for compose_file in compose_files:
-        # Extract network name from filename (e.g., docker-compose-mainnet.yml -> mainnet)
-        network_name = compose_file.stem.replace('docker-compose-', '')
-        
-        # Find corresponding package file
-        package_file = build_dir / f'dappnode_package-{network_name}.json'
-        
-        if not package_file.exists():
-            print(f"Warning: No matching package file for {compose_file.name}, skipping")
-            continue
-        
-        # Read the new version from the package file
-        with open(package_file, 'r') as f:
-            pkg_data = json.load(f)
-        
-        new_pkg_version = pkg_data.get('version', '')
-        
-        update_docker_compose(compose_file, new_pkg_version, latest_geth_version)
+    # Calculate new version
+    new_pkg_version = increment_patch_version(current_version)
+    
+    # Update package JSON
+    update_package_json(mainnet_package, new_pkg_version, latest_geth_version)
+    
+    print("\nUpdating mainnet docker-compose file...")
+    
+    # Update docker-compose
+    update_docker_compose(mainnet_compose, new_pkg_version, latest_geth_version)
     
     print("\n" + "=" * 60)
     print("Update completed successfully!")
@@ -277,18 +255,12 @@ def main():
             f.write(f"old_version={current_upstream}\n")
             f.write(f"new_version={latest_geth_version}\n")
             f.write(f"old_package_version={current_version}\n")
-            
-            # Get the new package version from mainnet
-            with open(mainnet_package_path, 'r') as pf:
-                updated_data = json.load(pf)
-                new_package_version = updated_data.get('version', '')
-            
-            f.write(f"new_package_version={new_package_version}\n")
+            f.write(f"new_package_version={new_pkg_version}\n")
     
     print("\nSummary:")
     print(f"  Geth version: {current_upstream} -> {latest_geth_version}")
-    print(f"  Package files updated: {len(package_files)}")
-    print(f"  Docker-compose files updated: {len(compose_files)}")
+    print(f"  Package version: {current_version} -> {new_pkg_version}")
+    print(f"  Files updated: mainnet only")
 
 
 if __name__ == '__main__':

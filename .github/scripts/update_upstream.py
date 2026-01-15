@@ -46,10 +46,18 @@ def fetch_latest_geth_release() -> str:
             data = json.loads(response.read().decode())
             tag_name = data.get('tag_name', '')
             print(f"Latest Geth release: {tag_name}")
+            
+            # Ensure the tag has 'v' prefix for consistency
+            if tag_name and not tag_name.startswith('v'):
+                tag_name = 'v' + tag_name
+            
             return tag_name
     except urllib.error.HTTPError as e:
-        print(f"Error fetching latest release: {e}")
-        print(f"Tip: Set GITHUB_TOKEN environment variable to avoid rate limiting")
+        if e.code == 403:
+            print(f"Error fetching latest release: Rate limit exceeded (HTTP 403)")
+            print(f"Tip: Ensure GITHUB_TOKEN is set and has sufficient quota")
+        else:
+            print(f"Error fetching latest release: HTTP {e.code} - {e.reason}")
         sys.exit(1)
     except Exception as e:
         print(f"Unexpected error: {e}")
@@ -158,10 +166,12 @@ def update_docker_compose(file_path: Path, new_image_tag: str, new_version_arg: 
     )
     
     # Update VERSION build arg
-    # Pattern: VERSION: vX.Y.Z
+    # Pattern: VERSION: vX.Y.Z or VERSION: X.Y.Z
+    # Ensure the new version has 'v' prefix
+    version_with_v = new_version_arg if new_version_arg.startswith('v') else 'v' + new_version_arg
     content = re.sub(
-        r"(VERSION:\s+)v[\d.]+",
-        rf"\g<1>{new_version_arg}",
+        r"(VERSION:\s+)v?[\d.]+",
+        rf"\g<1>{version_with_v}",
         content
     )
     

@@ -29,6 +29,14 @@ jobs:
         run: |
           python .github/scripts/update_upstream.py
 
+      - name: Sanitize version for branch name
+        if: steps.update.outputs.update_available == 'true'
+        id: sanitize
+        run: |
+          # Remove 'v' prefix and replace any non-alphanumeric chars with hyphens
+          sanitized=$(echo "${{ steps.update.outputs.new_version }}" | sed 's/^v//; s/[^a-zA-Z0-9.]/-/g')
+          echo "branch_version=${sanitized}" >> $GITHUB_OUTPUT
+
       - name: Create Pull Request
         if: steps.update.outputs.update_available == 'true'
         uses: peter-evans/create-pull-request@v6
@@ -69,7 +77,7 @@ jobs:
             [update-upstream workflow](.github/workflows/update_upstream.yml).*
 
             Please review and merge if the changes look correct.
-          branch: automated/update-geth-${{ steps.update.outputs.new_version }}
+          branch: automated/update-geth-${{ steps.sanitize.outputs.branch_version }}
           delete-branch: true
           labels: |
             automated

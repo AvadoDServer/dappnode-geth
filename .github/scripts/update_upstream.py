@@ -4,12 +4,12 @@ Script to automatically update Geth upstream version and package version.
 
 This script:
 1. Fetches the latest release from ethereum/go-ethereum
-2. Compares it with the current upstream version in build/dappnode_package.json
+2. Compares it with the current upstream version in build/dappnode_package-mainnet.json
 3. If a newer version is found:
-   - Increments the patch version in dappnode_packagejson
-   - Updates the upstream version in dappnode_package.json
-   - Updates the image tag in docker-compose.yml
-   - Updates the VERSION build arg in docker-compose.yml
+   - Increments the patch version in dappnode_package-mainnet.json
+   - Updates the upstream version in dappnode_package-mainnet.json
+   - Updates the image tag in docker-compose-mainnet.yml
+   - Updates the VERSION build arg in docker-compose-mainnet.yml
 
 Note: Only mainnet files are updated by this script.
 """
@@ -200,7 +200,7 @@ def main():
         sys.exit(1)
     
     # Read current upstream version from mainnet package
-    mainnet_package_path = build_dir / 'dappnode_package.json'
+    mainnet_package_path = build_dir / 'dappnode_package-mainnet.json'
     
     if not mainnet_package_path.exists():
         print(f"Error: {mainnet_package_path} not found")
@@ -230,8 +230,8 @@ def main():
     print("=" * 60 + "\n")
     
     # Only update mainnet files
-    mainnet_package = build_dir / 'dappnode_package.json'
-    mainnet_compose = build_dir / 'docker-compose.yml'
+    mainnet_package = build_dir / 'dappnode_package-mainnet.json'
+    mainnet_compose = build_dir / 'docker-compose-mainnet.yml'
     
     if not mainnet_package.exists():
         print(f"Error: {mainnet_package} not found")

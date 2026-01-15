@@ -1,0 +1,66 @@
+name: Update Geth Upstream Version
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    # Allow manual trigger
+
+jobs:
+  update-upstream:
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      
+      - name: Run update script
+        id: update
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/scripts/update_upstream.py
+      
+      - name: Create Pull Request
+        if: steps.update.outputs.update_available == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update Geth to ${{ steps.update.outputs.new_version }}"
+          title: "chore: update Geth from ${{ steps.update.outputs.old_version }} to ${{ steps.update.outputs.new_version }}"
+          body: |
+            ## Automated Geth Upstream Update
+            
+            This PR updates the Geth upstream version from **${{ steps.update.outputs.old_version }}** to **${{ steps.update.outputs.new_version }}**.
+            
+            ### Changes made:
+            
+            - Updated `upstream` version in all `dappnode_package-*.json` files
+            - Incremented `version` (patch level) in all `dappnode_package-*.json` files
+            - Updated `image` tag in all `docker-compose-*.yml` files
+            - Updated `VERSION` build argument in all `docker-compose-*.yml` files
+            
+            ### Package version changes:
+            
+            - Package version: **${{ steps.update.outputs.old_package_version }}** → **${{ steps.update.outputs.new_package_version }}**
+            - Geth version: **${{ steps.update.outputs.old_version }}** → **${{ steps.update.outputs.new_version }}**
+            
+            ---
+            
+            *This PR was created automatically by the [update-upstream workflow](.github/workflows/update_upstream.yml).*
+            
+            Please review and merge if the changes look correct.
+          branch: automated/update-geth-${{ steps.update.outputs.new_version }}
+          delete-branch: true
+          labels: |
+            automated
+            dependencies
+            geth-update

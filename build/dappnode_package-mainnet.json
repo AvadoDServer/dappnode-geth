@@ -10,8 +10,13 @@
   "chain": "ethereum",
   "image": {
     "restart": "always",
-    "ports": ["30303:30303", "30303:30303/udp"],
-    "volumes": ["ethchain-geth:/root/.ethereum/ethchain-geth"],
+    "ports": [
+      "30303:30303",
+      "30303:30303/udp"
+    ],
+    "volumes": [
+      "ethchain-geth:/root/.ethereum/ethchain-geth"
+    ],
     "environment": [
       "NETWORK=mainnet",
       "EXTRA_OPTS=--http.api eth,net,web3,txpool"

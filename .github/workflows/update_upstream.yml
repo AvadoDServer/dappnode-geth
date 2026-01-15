@@ -3,7 +3,7 @@ name: Update Geth Upstream Version
 on:
   schedule:
     # Run daily at 2 AM UTC
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
   workflow_dispatch:
     # Allow manual trigger
 
@@ -23,7 +23,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Run update script
         id: update
@@ -44,7 +44,7 @@ jobs:
         if: steps.update.outputs.update_available == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           commit-message: >-
             chore: update Geth to ${{ steps.update.outputs.new_version }}
           title: >-

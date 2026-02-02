@@ -75,6 +75,7 @@ jobs:
               **${{ steps.update.outputs.new_version }}**
 
             ---
+            cc @flisko
 
             *This PR was created automatically by the
             [update-upstream workflow](.github/workflows/update_upstream.yml).*

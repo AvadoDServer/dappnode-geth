@@ -10,8 +10,10 @@ This script:
    - Updates the upstream version in dappnode_package-mainnet.json
    - Updates the image tag in docker-compose-mainnet.yml
    - Updates the VERSION build arg in docker-compose-mainnet.yml
+   - Applies the same updates to the root dappnode_package.json
+     and docker-compose.yml
 
-Note: Only mainnet files are updated by this script.
+Note: Only mainnet files (build/ and repo root) are updated by this script.
 """
 
 import json
@@ -229,30 +231,31 @@ def main():
     print(f"Update available: {current_upstream} -> {latest_geth_version}")
     print("=" * 60 + "\n")
     
-    # Only update mainnet files
+    # Mainnet build files and their root-level counterparts
     mainnet_package = build_dir / 'dappnode_package-mainnet.json'
     mainnet_compose = build_dir / 'docker-compose-mainnet.yml'
-    
-    if not mainnet_package.exists():
-        print(f"Error: {mainnet_package} not found")
-        sys.exit(1)
-    
-    if not mainnet_compose.exists():
-        print(f"Error: {mainnet_compose} not found")
-        sys.exit(1)
-    
-    print("Updating mainnet package file...")
-    
+    root_package = repo_root / 'dappnode_package.json'
+    root_compose = repo_root / 'docker-compose.yml'
+
+    for required_file in (mainnet_package, mainnet_compose, root_package, root_compose):
+        if not required_file.exists():
+            print(f"Error: {required_file} not found")
+            sys.exit(1)
+
+    print("Updating package files...")
+
     # Calculate new version
     new_pkg_version = increment_patch_version(current_version)
-    
-    # Update package JSON
+
+    # Update package JSONs
     update_package_json(mainnet_package, new_pkg_version, latest_geth_version)
-    
-    print("\nUpdating mainnet docker-compose file...")
-    
-    # Update docker-compose
+    update_package_json(root_package, new_pkg_version, latest_geth_version)
+
+    print("\nUpdating docker-compose files...")
+
+    # Update docker-compose files
     update_docker_compose(mainnet_compose, new_pkg_version, latest_geth_version)
+    update_docker_compose(root_compose, new_pkg_version, latest_geth_version)
     
     print("\n" + "=" * 60)
     print("Update completed successfully!")
@@ -270,7 +273,7 @@ def main():
     print("\nSummary:")
     print(f"  Geth version: {current_upstream} -> {latest_geth_version}")
     print(f"  Package version: {current_version} -> {new_pkg_version}")
-    print(f"  Files updated: mainnet only")
+    print(f"  Files updated: build mainnet + repo root")
 
 
 if __name__ == '__main__':

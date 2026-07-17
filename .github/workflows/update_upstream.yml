@@ -60,11 +60,13 @@ jobs:
             ### Changes made:
 
             - Updated `upstream` version in `dappnode_package-mainnet.json`
+              and `dappnode_package.json`
             - Incremented `version` (patch level) in
-              `dappnode_package-mainnet.json`
+              `dappnode_package-mainnet.json` and `dappnode_package.json`
             - Updated `image` tag in `docker-compose-mainnet.yml`
+              and `docker-compose.yml`
             - Updated `VERSION` build argument in
-              `docker-compose-mainnet.yml`
+              `docker-compose-mainnet.yml` and `docker-compose.yml`
 
             ### Package version changes:
 

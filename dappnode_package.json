@@ -1,7 +1,7 @@
 {
   "name": "ethchain-geth.public.dappnode.eth",
-  "version": "10.0.83",
-  "upstream": "v1.17.5",
+  "version": "10.0.84",
+  "upstream": "v1.17.6",
   "autoupdate": true,
   "title": "Ethereum node (Geth + mainnet)",
   "description": "Ethereum Client - based on Geth",
